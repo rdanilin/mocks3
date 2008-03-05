@@ -1,5 +1,7 @@
 package com.snipreel.mocks3;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
@@ -21,6 +23,25 @@ public class MockS3Servlet extends HttpServlet {
     
     @Override
     protected void doGet (HttpServletRequest req, HttpServletResponse rsp) {
+        S3Info info = new S3Info(req.getLocalName(), req.getRequestURI());
+        byte[] data = store.getData(info.getBucket(), info.getKey());
+        if ( data != null ) {
+            rsp.setStatus(HttpServletResponse.SC_OK);
+            writeResponse(rsp, data);
+        } else {
+            rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+    
+    private void writeResponse (HttpServletResponse rsp, byte[] data) {
+        try {
+            OutputStream os = rsp.getOutputStream();
+            os.write(data);
+            os.flush();
+        } catch (IOException ex) {
+            log.warning("IO Problem writing to response");
+        }
+        
     }
 
     @Override

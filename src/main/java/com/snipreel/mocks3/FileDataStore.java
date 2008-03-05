@@ -11,14 +11,14 @@ package com.snipreel.mocks3;
  */
 class FileDataStore implements DataStore {
 
-    public void addData(String key,byte[] data) {
+    public void addData(String bucket, String key,byte[] data) {
     }
 
-    public byte[] getData(String key) {
+    public byte[] getData(String bucket, String key) {
         return null;
     }
 
-    public boolean hasData(String key) {
+    public boolean hasData(String bucket, String key) {
         return false;
     }
 

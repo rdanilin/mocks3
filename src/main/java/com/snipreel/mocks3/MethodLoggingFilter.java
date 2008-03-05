@@ -21,7 +21,7 @@ public class MethodLoggingFilter implements Filter {
         ServletRequest req, ServletResponse rsp, FilterChain chain
     ) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest)req;
-        log.info("Calling " + httpRequest.getMethod() + " for " + httpRequest.getRequestURI());
+        log.info("Calling " + httpRequest.getMethod() + " for " + httpRequest.getRemoteHost() + " / " + httpRequest.getRequestURI());
         chain.doFilter(req, rsp);
     }
 
