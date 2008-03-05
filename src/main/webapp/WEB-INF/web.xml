@@ -11,6 +11,10 @@
       <servlet-class>
          com.snipreel.mocks3.MockS3Servlet
       </servlet-class>
+      <init-param>
+          <param-name>com.snipreel.mocks3.DataStore</param-name>
+          <param-value>com.snipreel.mocks3.MemoryDataStore</param-value>
+      </init-param>
    </servlet>
 
    <!-- Catch all requests -->
