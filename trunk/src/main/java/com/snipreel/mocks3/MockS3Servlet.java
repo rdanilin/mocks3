@@ -23,11 +23,20 @@ public class MockS3Servlet extends HttpServlet {
     
     @Override
     protected void doGet (HttpServletRequest req, HttpServletResponse rsp) {
+        doGet(req, rsp, true);
+    }
+    
+    @Override
+    protected void doHead (HttpServletRequest req, HttpServletResponse rsp) {
+        doGet(req, rsp, false);
+    }
+
+    private void doGet (HttpServletRequest req, HttpServletResponse rsp, boolean includeContent) {
         S3Info info = new S3Info(req.getLocalName(), req.getRequestURI());
         byte[] data = store.getData(info.getBucket(), info.getKey());
         if ( data != null ) {
             rsp.setStatus(HttpServletResponse.SC_OK);
-            writeResponse(rsp, data);
+            if ( includeContent ) writeResponse(rsp, data);
         } else {
             rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -50,10 +59,6 @@ public class MockS3Servlet extends HttpServlet {
 
     @Override
     protected void doPut (HttpServletRequest req, HttpServletResponse rsp) {
-    }
-
-    @Override
-    protected void doHead (HttpServletRequest req, HttpServletResponse rsp) {
     }
 
     @Override
