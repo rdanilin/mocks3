@@ -10,6 +10,15 @@ public class MockS3Servlet extends HttpServlet {
     
     private static final Logger log = Logger.getLogger(MockS3Servlet.class.getName());
     
+    private DataStore store = DataStoreFactory.NULL;
+    
+    @Override
+    public void init () {
+        String storeType = getServletConfig().getInitParameter(DataStore.class.getName());
+        this.store = DataStoreFactory.getInstance().getStore(storeType);
+        log.info("Created " + this.store + " from " + storeType);
+    }
+    
     @Override
     protected void doGet (HttpServletRequest req, HttpServletResponse rsp) {
     }
