@@ -16,7 +16,7 @@ public class MockS3Servlet extends HttpServlet {
     public void init () {
         String storeType = getServletConfig().getInitParameter(DataStore.class.getName());
         this.store = DataStoreFactory.getInstance().getStore(storeType);
-        log.info("Created " + this.store + " from " + storeType);
+        log.fine("Created " + this.store + " from " + storeType);
     }
     
     @Override
