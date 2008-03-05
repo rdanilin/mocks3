@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.snipreel</groupId>
     <artifactId>mocks3</artifactId>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <version>0.1</version>
 
     <name>Mock S3</name>
