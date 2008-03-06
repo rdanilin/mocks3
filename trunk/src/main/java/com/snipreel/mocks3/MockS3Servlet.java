@@ -12,17 +12,17 @@ public class MockS3Servlet extends HttpServlet {
     
     private static final Logger log = Logger.getLogger(MockS3Servlet.class.getName());
     
-    private DataStore store = DataStoreFactory.NULL;
+    private DataStoreSource storeSource = DataStoreFactory.NULL_SOURCE;
     
     @Override
     public void init () {
         String storeType = getServletConfig().getInitParameter(DataStore.class.getName());
-        this.store = DataStoreFactory.getInstance().getStore(storeType);
-        log.fine("Created " + this.store + " from " + storeType);
+        this.storeSource = DataStoreFactory.getInstance().getStoreSource(storeType);
+        log.fine("Created " + this.storeSource + " from " + storeType);
     }
     
     private DataStore getStore (String bucket) {
-        return store;
+        return storeSource.getStore(bucket);
     }
     
     @Override
@@ -42,16 +42,20 @@ public class MockS3Servlet extends HttpServlet {
             rsp.setStatus(HttpServletResponse.SC_OK);
         } else {
             DataStore store = getStore(info.getBucket());
-            if ( info.getKey().length() == 0 ) {
-                rsp.setStatus(HttpServletResponse.SC_OK);
-                // to do: report objects in the body of the response
+            if ( store == null ) {
+                rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             } else {
-                byte[] data = store.getData(info.getKey());
-                if ( data != null ) {
+                if ( info.getKey().length() == 0 ) {
                     rsp.setStatus(HttpServletResponse.SC_OK);
-                    if ( includeContent ) writeResponse(rsp, data);
+                    // to do: report objects in the body of the response
                 } else {
-                    rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    byte[] data = store.getData(info.getKey());
+                    if ( data != null ) {
+                        rsp.setStatus(HttpServletResponse.SC_OK);
+                        if ( includeContent ) writeResponse(rsp, data);
+                    } else {
+                        rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    }
                 }
             }
         }
