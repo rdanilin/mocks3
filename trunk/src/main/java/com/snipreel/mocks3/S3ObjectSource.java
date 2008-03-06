@@ -8,7 +8,7 @@ import java.util.List;
  * S3 service does not support that.
  */
 interface S3ObjectSource {
-
+    
     /**
      * Retrieve the bytes stored with the provided key.  Returns null if the key does not exist.
      */
