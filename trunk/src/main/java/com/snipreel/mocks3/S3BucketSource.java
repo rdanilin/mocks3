@@ -5,12 +5,12 @@ import java.util.List;
 /**
  * Interface for retrieving data stores based on bucket names
  */
-interface DataStoreSource {
+interface S3BucketSource {
 
     /**
      * Retrieve the data store for the bucket, null if there is no such bucket
      */
-    DataStore getStore (String bucket);
+    S3ObjectSource getBucket (String bucket);
     
     /**
      * Add a data store for the provided bucket, if it doesn't already exist.
@@ -18,16 +18,16 @@ interface DataStoreSource {
      * @param bucket
      * @return
      */
-    DataStore addStore (String bucket);
+    S3ObjectSource addBucket (String bucket);
     
     /**
      * Delete the named store.
      */
-    void deleteStore (String bucket);
+    void deleteBucket (String bucket);
     
     /**
      * Retrieve a list of the bucket names for which stores exist
      */
-    List<String> getStoreNames ();
+    List<String> getBucketNames ();
 
 }
