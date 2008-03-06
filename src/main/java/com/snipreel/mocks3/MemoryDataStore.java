@@ -1,5 +1,8 @@
 package com.snipreel.mocks3;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -12,25 +15,27 @@ class MemoryDataStore implements DataStore {
     private static final ConcurrentHashMap<String, byte[]> cache = 
         new ConcurrentHashMap<String,byte[]>();
 
-    public void addData (String bucket, String key,byte[] data) {
-        String cacheKey = cacheKey(bucket, key);
+    public void addData (String key,byte[] data) {
         if ( data == null ) {
-            cache.remove(cacheKey);
+            cache.remove(key);
         } else {
-            cache.put(cacheKey, data);
+            cache.put(key, data);
         }
     }
 
-    public byte[] getData (String bucket, String key) {
-        return cache.get(cacheKey(bucket, key));
+    public byte[] getData (String key) {
+        return cache.get(key);
     }
 
-    public boolean hasData (String bucket, String key) {
-        return cache.containsKey(cacheKey(bucket, key));
+    public boolean hasData (String key) {
+        return cache.containsKey(key);
     }
     
-    private String cacheKey (String bucket, String key) {
-        return bucket + "-" + key;
+    public List<String> getKeys () {
+        List<String> result = new ArrayList<String>();
+        result.addAll(cache.keySet());
+        Collections.sort(result);
+        return result;
     }
-
+    
 }
