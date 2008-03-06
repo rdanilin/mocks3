@@ -11,6 +11,10 @@ class DataStoreFactory {
     private static final DataStoreFactory instance = new DataStoreFactory();
     static final DataStoreFactory getInstance () { return instance; }
     
+    DataStoreSource getStoreSource (String storeClassName) {
+        return new MemoryDataStoreSource(storeClassName);
+    }
+    
     DataStore getStore (String storeClassName) {
         if ( storeClassName != null ) {
             try {
@@ -28,6 +32,13 @@ class DataStoreFactory {
         }
         return NULL;
     }
+    
+    static final DataStoreSource NULL_SOURCE = new DataStoreSource () {
+        public DataStore addStore(String bucket) { return null; }
+        public void deleteStore(String bucket) {}
+        public DataStore getStore(String bucket) {return null;}
+        public List<String> getStoreNames() {return Collections.<String>emptyList();}
+    };
     
     static final DataStore NULL = new DataStore () {
         public void addData(String key,byte[] data) {}
