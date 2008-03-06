@@ -1,5 +1,7 @@
 package com.snipreel.mocks3;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 class DataStoreFactory {
@@ -28,9 +30,10 @@ class DataStoreFactory {
     }
     
     static final DataStore NULL = new DataStore () {
-        public void addData(String bucket, String key,byte[] data) {}
-        public byte[] getData(String bucket, String key)           { return null; }
-        public boolean hasData(String bucket, String key)          { return false; }
+        public void addData(String key,byte[] data) {}
+        public byte[] getData(String key)           { return null; }
+        public boolean hasData(String key)          { return false; }
+        public List<String> getKeys ()              { return Collections.<String>emptyList(); }
     };
 
 }
