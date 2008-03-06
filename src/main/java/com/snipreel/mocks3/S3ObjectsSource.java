@@ -6,29 +6,38 @@ import java.util.logging.Logger;
 
 class S3ObjectsSource {
     
+    enum Type { MEMORY, FILE };
+    
     private static final Logger log = Logger.getLogger(S3ObjectsSource.class.getName());
     
     private static final S3ObjectsSource instance = new S3ObjectsSource();
     static final S3ObjectsSource getInstance () { return instance; }
     
-    S3BucketSource getStoreSource (String storeClassName) {
-        return new S3BucketMemorySource(storeClassName);
+    S3BucketSource getStoreSource (String storeType) {
+        return getStoreSource(getType(storeType));
     }
     
-    S3ObjectSource getStore (String storeClassName) {
-        if ( storeClassName != null ) {
-            try {
-                Class<?> cls = Class.forName(storeClassName);
-                if ( S3ObjectSource.class.isAssignableFrom(cls) ) {
-                    return S3ObjectSource.class.cast(cls.newInstance());
-                }
-            } catch (ClassNotFoundException e) {
-                log.severe("Unable to find class " + storeClassName);
-            } catch (InstantiationException e) {
-                log.severe("Unable to create class " + storeClassName);
-            } catch (IllegalAccessException e) {
-                log.severe("Unable to create class " + storeClassName);
-            }
+    S3BucketSource getStoreSource (Type storeType) {
+        switch (storeType) {
+            case MEMORY : return new S3BucketMemorySource();
+        }
+        return NULL_SOURCE;
+    }
+    
+    S3ObjectSource getStore (String storeType) {
+        return getStore(getType(storeType));
+    }
+    
+    private Type getType (String storeType) {
+        if ( storeType != null && storeType.length() > 0 ) {
+            return Type.valueOf(storeType);
+        }
+        return Type.MEMORY;
+    }
+    
+    S3ObjectSource getStore (Type storeType) {
+        switch (storeType) {
+            case MEMORY : return new S3ObjectMemorySource();
         }
         return NULL;
     }
