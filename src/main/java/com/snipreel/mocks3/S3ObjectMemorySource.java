@@ -7,17 +7,17 @@ import java.util.List;
  * a servlet loses all previous data.
  *
  */
-class MemoryDataStore implements DataStore {
+class S3ObjectMemorySource implements S3ObjectSource {
     
     private static final NamedCache<byte[]> cache = new NamedCache<byte[]>();
 
-    public void addData (String key,byte[] data) {
+    public void addObject (String key,byte[] data) {
         if ( data == null )  cache.remove(key);
         else cache.put(key, data);
     }
 
-    public byte[] getData (String key) { return cache.get(key); }
-    public boolean hasData (String key) { return cache.containsKey(key); }
+    public byte[] getObject (String key) { return cache.get(key); }
+    public boolean hasObject (String key) { return cache.containsKey(key); }
     public List<String> getKeys () { return cache.getKeys(); }
     
 }

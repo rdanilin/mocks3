@@ -12,17 +12,17 @@ public class MockS3Servlet extends HttpServlet {
     
     private static final Logger log = Logger.getLogger(MockS3Servlet.class.getName());
     
-    private DataStoreSource storeSource = DataStoreFactory.NULL_SOURCE;
+    private S3BucketSource storeSource = S3ObjectsSource.NULL_SOURCE;
     
     @Override
     public void init () {
-        String storeType = getServletConfig().getInitParameter(DataStore.class.getName());
-        this.storeSource = DataStoreFactory.getInstance().getStoreSource(storeType);
+        String storeType = getServletConfig().getInitParameter(S3ObjectSource.class.getName());
+        this.storeSource = S3ObjectsSource.getInstance().getStoreSource(storeType);
         log.fine("Created " + this.storeSource + " from " + storeType);
     }
     
-    private DataStore getStore (String bucket) {
-        return storeSource.getStore(bucket);
+    private S3ObjectSource getStore (String bucket) {
+        return storeSource.getBucket(bucket);
     }
     
     @Override
@@ -41,7 +41,7 @@ public class MockS3Servlet extends HttpServlet {
             // to do: report available buckets in the body of the response. 
             rsp.setStatus(HttpServletResponse.SC_OK);
         } else {
-            DataStore store = getStore(info.getBucket());
+            S3ObjectSource store = getStore(info.getBucket());
             if ( store == null ) {
                 rsp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             } else {
@@ -49,7 +49,7 @@ public class MockS3Servlet extends HttpServlet {
                     rsp.setStatus(HttpServletResponse.SC_OK);
                     // to do: report objects in the body of the response
                 } else {
-                    byte[] data = store.getData(info.getKey());
+                    byte[] data = store.getObject(info.getKey());
                     if ( data != null ) {
                         rsp.setStatus(HttpServletResponse.SC_OK);
                         if ( includeContent ) writeResponse(rsp, data);
