@@ -1,8 +1,14 @@
 package com.snipreel.mocks3;
 
+import javax.servlet.http.HttpServletRequest;
+
 class S3Info {
     
-    S3Info (String serverName, String requestUri) {
+    S3Info (HttpServletRequest request) {
+        this(request.getLocalName(), request.getRequestURI()); 
+    }
+
+    private S3Info (String serverName, String requestUri) {
         requestUri = removeLeadingSlash(requestUri);
         if ( isAmazonServer(serverName) ) {
             int index = requestUri.indexOf("/");

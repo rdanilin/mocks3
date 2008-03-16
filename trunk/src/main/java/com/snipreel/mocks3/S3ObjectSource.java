@@ -29,5 +29,10 @@ interface S3ObjectSource {
      * Returns the keys in this store sorted alphabetically
      */
     public List<String> getKeys ();
+    
+    /**
+     * Delete the identified object, returning true if it existed and false if it didn't.
+     */
+    public boolean removeObject (String key);
 
 }

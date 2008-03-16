@@ -19,5 +19,6 @@ class S3ObjectMemorySource implements S3ObjectSource {
     public byte[] getObject (String key) { return cache.get(key); }
     public boolean hasObject (String key) { return cache.containsKey(key); }
     public List<String> getKeys () { return cache.getKeys(); }
+    public boolean removeObject (String key) { return cache.remove(key); }
     
 }
