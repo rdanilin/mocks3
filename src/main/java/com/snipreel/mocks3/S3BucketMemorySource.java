@@ -16,7 +16,7 @@ class S3BucketMemorySource implements S3BucketSource {
         else return null;
     }
 
-    public void deleteBucket(String bucket) { cache.remove(bucket); }
+    public boolean deleteBucket(String bucket) { return cache.remove(bucket); }
     public S3ObjectSource getBucket(String bucket) { return cache.get(bucket); }
     public List<String> getBucketNames() { return cache.getKeys(); }
 }

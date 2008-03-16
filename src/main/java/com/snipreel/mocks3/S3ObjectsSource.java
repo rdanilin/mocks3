@@ -44,16 +44,17 @@ class S3ObjectsSource {
     
     static final S3BucketSource NULL_SOURCE = new S3BucketSource () {
         public S3ObjectSource addBucket(String bucket) { return null; }
-        public void deleteBucket(String bucket) {}
-        public S3ObjectSource getBucket(String bucket) {return null;}
-        public List<String> getBucketNames() {return Collections.<String>emptyList();}
+        public boolean deleteBucket(String bucket)     { return false; }
+        public S3ObjectSource getBucket(String bucket) { return null;}
+        public List<String> getBucketNames()           { return Collections.<String>emptyList();}
     };
     
     static final S3ObjectSource NULL = new S3ObjectSource () {
         public void addObject(String key,byte[] data) {}
         public byte[] getObject(String key)           { return null; }
         public boolean hasObject(String key)          { return false; }
-        public List<String> getKeys ()              { return Collections.<String>emptyList(); }
+        public List<String> getKeys ()                { return Collections.<String>emptyList(); }
+        public boolean removeObject (String key)      { return false; }
     };
 
 }

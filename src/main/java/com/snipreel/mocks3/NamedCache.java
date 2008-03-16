@@ -18,7 +18,9 @@ class NamedCache<T> {
     
     private ConcurrentHashMap<String, T> cache = new ConcurrentHashMap<String,T>();
     
-    void remove (String key)          { cache.remove(key); }
+    boolean remove (String key)       {
+        return cache.remove(key) != null;
+    }
     T get (String key)                { return cache.get(key); }
     void put (String key, T t)        { cache.put(key, t); }
     T putIfAbsent(String key, T t)    { return cache.putIfAbsent(key, t); }

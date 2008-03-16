@@ -23,7 +23,7 @@ interface S3BucketSource {
     /**
      * Delete the named store.
      */
-    void deleteBucket (String bucket);
+    boolean deleteBucket (String bucket);
     
     /**
      * Retrieve a list of the bucket names for which stores exist
