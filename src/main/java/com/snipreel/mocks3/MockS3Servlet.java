@@ -7,7 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class MockS3Servlet extends HttpServlet {
-    
+    private static final long serialVersionUID = 0L;
+
     private static final Logger log = Logger.getLogger(MockS3Servlet.class.getName());
     
     private S3RequestFactory requestFactory;
