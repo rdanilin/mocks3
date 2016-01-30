@@ -1,21 +1,35 @@
 package com.snipreel.mocks3;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 final class S3RequestFactory {
-    
     private static final Logger log = Logger.getLogger(S3RequestFactory.class.getName());
+    private static final BaseHandler INVALID_METHOD = new BaseHandler() {
+        public void doit() {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    };
+    private final S3BucketSource bucketSource;
 
-    S3RequestFactory (S3BucketSource bucketSource) {
+    S3RequestFactory(S3BucketSource bucketSource) {
         this.bucketSource = bucketSource;
     }
-    private final S3BucketSource bucketSource;
-    
+
+    private static void writeResponse(HttpServletResponse rsp, byte[] data) {
+        try {
+            OutputStream os = rsp.getOutputStream();
+            os.write(data);
+            os.flush();
+        } catch (IOException ex) {
+            log.warning("IO Problem writing to response");
+        }
+    }
+
     S3RequestHandler getHandler (HttpServletRequest req, HttpServletResponse rsp) {
         S3Info info = new S3Info(req);
         BaseHandler handler = getBaseHandler(req.getMethod(), info);
@@ -24,7 +38,7 @@ final class S3RequestFactory {
         handler.response = rsp;
         return handler;
     }
-    
+
     BaseHandler getBaseHandler (String reqMethod,S3Info info) {
         if ( reqMethod.equalsIgnoreCase("get") ) {
             if ( info.getKey().length() > 0 ) {
@@ -51,22 +65,12 @@ final class S3RequestFactory {
         }
         return INVALID_METHOD;
     }
-    
-    private static void writeResponse (HttpServletResponse rsp, byte[] data) {
-        try {
-            OutputStream os = rsp.getOutputStream();
-            os.write(data);
-            os.flush();
-        } catch (IOException ex) {
-            log.warning("IO Problem writing to response");
-        }
-    }
 
     private static abstract class BaseHandler implements S3RequestHandler {
         protected S3Info requestInfo;
         protected HttpServletResponse response;
         protected S3BucketSource bucketSource;
-        
+
         public S3Info getRequest () { return requestInfo; }
         protected S3ObjectSource getStore (String bucket) {
             return bucketSource.getBucket(bucket);
@@ -74,10 +78,12 @@ final class S3RequestFactory {
     }
 
     private static class S3ObjectGetter extends BaseHandler {
-        S3ObjectGetter (boolean includeBody) { 
+        private final boolean includeObjectBody;
+
+        S3ObjectGetter(boolean includeBody) {
             this.includeObjectBody = includeBody;
         }
-        private final boolean includeObjectBody;
+
         public void doit () {
             S3ObjectSource store = getStore(requestInfo.getBucket());
             if ( store == null ) {
@@ -93,7 +99,7 @@ final class S3RequestFactory {
             }
         }
     }
-    
+
     private static class S3ObjectLister extends BaseHandler {
         public void doit () {
             S3ObjectSource store = getStore(requestInfo.getBucket());
@@ -102,23 +108,26 @@ final class S3RequestFactory {
             } else {
                 response.setStatus(HttpServletResponse.SC_OK);
                 for (String key : store.getKeys() ) {
-                    
+
                 }
             }
         }
     }
+
     private static class S3BucketLister extends BaseHandler {
         public void doit () {
             response.setStatus(HttpServletResponse.SC_OK);
             for (String key : bucketSource.getBucketNames() ) {
-                
+
             }
         }
     }
+
     private static class S3BucketChecker extends BaseHandler {
         public void doit () {
         }
     }
+
     private static class S3BucketDeleter extends BaseHandler {
         public void doit () {
             if ( bucketSource.deleteBucket(requestInfo.getBucket()) ) {
@@ -128,6 +137,7 @@ final class S3RequestFactory {
             }
         }
     }
+
     private static class S3ObjectDeleter extends BaseHandler {
         public void doit () {
             S3ObjectSource store = getStore(requestInfo.getBucket());
@@ -140,12 +150,6 @@ final class S3RequestFactory {
             }
         }
     }
-    
-    private static final BaseHandler INVALID_METHOD = new BaseHandler () {
-        public void doit () {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
-    };
-    
+
 
 }

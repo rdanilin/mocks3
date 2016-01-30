@@ -28,10 +28,12 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'
     compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
 }
 
 task itest(type: Test) {
+    println "Starting integration tests"
     testClassesDir = sourceSets.itest.output.classesDir
     classpath = sourceSets.itest.runtimeClasspath
     outputs.upToDateWhen { false }
@@ -45,4 +47,16 @@ tasks.withType(Test) {
 
 check.dependsOn itest
 itest.mustRunAfter test
+itest.dependsOn jettyRun
+jettyStop.mustRunAfter itest
+
+// Jetty configuration
+jettyRun {
+    daemon = true
+    httpPort = 9000
+    contextPath = '/'
+    classpath = configurations.compile
+}
+[jettyRun, jettyStop]*.stopPort = 9001
+[jettyRun, jettyStop]*.stopKey = 'stop'
 
