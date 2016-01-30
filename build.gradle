@@ -3,9 +3,25 @@ version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'war'
+apply plugin: 'jetty'
 
 sourceCompatibility = 1.6
 
+configurations {
+    itestCompile.extendsFrom testCompile
+    itestRuntime.extendsFrom testRuntime
+}
+
+sourceSets {
+    itest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/itest/java')
+        }
+        resources.srcDir file('src/itest/resources')
+    }
+}
 repositories {
     mavenCentral()
 }
@@ -14,3 +30,19 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'
 }
+
+task itest(type: Test) {
+    testClassesDir = sourceSets.itest.output.classesDir
+    classpath = sourceSets.itest.runtimeClasspath
+    outputs.upToDateWhen { false }
+}
+
+// itest.dependsOn jettyRun
+
+tasks.withType(Test) {
+    reports.html.destination = file("${reporting.baseDir}/${name}")
+}
+
+check.dependsOn itest
+itest.mustRunAfter test
+
