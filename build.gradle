@@ -6,6 +6,7 @@ apply plugin: 'war'
 
 sourceCompatibility = 1.6
 
+
 repositories {
     mavenCentral()
 }
