@@ -38,8 +38,6 @@ task itest(type: Test) {
     outputs.upToDateWhen { false }
 }
 
-// itest.dependsOn jettyRun
-
 tasks.withType(Test) {
     reports.html.destination = file("${reporting.baseDir}/${name}")
 }
