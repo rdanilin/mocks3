@@ -33,7 +33,6 @@ dependencies {
 }
 
 task itest(type: Test) {
-    println "Starting integration tests"
     testClassesDir = sourceSets.itest.output.classesDir
     classpath = sourceSets.itest.runtimeClasspath
     outputs.upToDateWhen { false }
