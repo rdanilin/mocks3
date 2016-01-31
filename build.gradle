@@ -42,18 +42,21 @@ tasks.withType(Test) {
     reports.html.destination = file("${reporting.baseDir}/${name}")
 }
 
-check.dependsOn itest
-itest.mustRunAfter test
-itest.dependsOn jettyRun
-jettyStop.mustRunAfter itest
-
 // Jetty configuration
 jettyRun {
     daemon = true
     httpPort = 9000
     contextPath = '/'
     classpath = configurations.compile
+    stopPort = 9100
+    stopKey = 'stop'
 }
-[jettyRun, jettyStop]*.stopPort = 9001
-[jettyRun, jettyStop]*.stopKey = 'stop'
 
+jettyStop {
+    stopPort = 9100
+    stopKey = 'stop'
+}
+
+check.dependsOn itest
+itest.dependsOn jettyRun
+jettyStop.mustRunAfter itest

@@ -14,5 +14,13 @@ public class S3ServletTest {
     public void testServerConnect() throws IOException {
         final Response response = Request.Get(serverUrl).execute();
         Assert.assertNotNull(response);
+        Assert.assertTrue(response.returnResponse().getStatusLine().getStatusCode() != 500);
+    }
+
+    @Test
+    public void testBucketAccess() throws IOException {
+        final Response response = Request.Get(serverUrl + "/my_temp_bucket").execute();
+        Assert.assertNotNull(response);
+        Assert.assertTrue(response.returnResponse().getStatusLine().getStatusCode() != 500);
     }
 }
