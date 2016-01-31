@@ -7,7 +7,7 @@ import org.apache.http.client.fluent.Response;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class S3ServletTest {
+public class MockS3ServletTest {
     private String serverUrl = "http://localhost:9000";
 
     @Test
@@ -19,7 +19,14 @@ public class S3ServletTest {
 
     @Test
     public void testBucketAccess() throws IOException {
-        final Response response = Request.Get(serverUrl + "/my_temp_bucket").execute();
+        final Response response = Request.Get(serverUrl + "/sbucket").execute();
+        Assert.assertNotNull(response);
+        Assert.assertTrue(response.returnResponse().getStatusLine().getStatusCode() != 500);
+    }
+
+    @Test
+    public void testBucketCreate() throws IOException {
+        final Response response = Request.Get(serverUrl + "/sbucket").execute();
         Assert.assertNotNull(response);
         Assert.assertTrue(response.returnResponse().getStatusLine().getStatusCode() != 500);
     }
