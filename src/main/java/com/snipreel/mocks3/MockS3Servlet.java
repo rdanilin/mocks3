@@ -1,10 +1,12 @@
 package com.snipreel.mocks3;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 @WebServlet(displayName = "MockS3servlet", urlPatterns = "/*")
@@ -21,27 +23,7 @@ public class MockS3Servlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse rsp) {
-        requestFactory.getHandler(req, rsp).doit();
-    }
-
-    @Override
-    protected void doHead(HttpServletRequest req, HttpServletResponse rsp) {
-        requestFactory.getHandler(req, rsp).doit();
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse rsp) {
-        requestFactory.getHandler(req, rsp).doit();
-    }
-
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse rsp) {
-        requestFactory.getHandler(req, rsp).doit();
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse rsp) {
-        requestFactory.getHandler(req, rsp).doit();
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        requestFactory.getHandler(req, resp).doit();
     }
 }

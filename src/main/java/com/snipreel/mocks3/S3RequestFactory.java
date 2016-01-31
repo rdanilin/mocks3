@@ -30,7 +30,7 @@ final class S3RequestFactory {
         }
     }
 
-    S3RequestHandler getHandler (HttpServletRequest req, HttpServletResponse rsp) {
+    S3RequestHandler getHandler(HttpServletRequest req, HttpServletResponse rsp) {
         S3Info info = new S3Info(req);
         BaseHandler handler = getBaseHandler(req.getMethod(), info);
         handler.bucketSource = this.bucketSource;
@@ -39,27 +39,27 @@ final class S3RequestFactory {
         return handler;
     }
 
-    BaseHandler getBaseHandler (String reqMethod,S3Info info) {
-        if ( reqMethod.equalsIgnoreCase("get") ) {
-            if ( info.getKey().length() > 0 ) {
+    BaseHandler getBaseHandler(String reqMethod, S3Info info) {
+        if (reqMethod.equalsIgnoreCase("get")) {
+            if (info.getKey().length() > 0) {
                 return new S3ObjectGetter(true);
-            } else if ( info.getBucket().length() > 0 ) {
+            } else if (info.getBucket().length() > 0) {
                 return new S3ObjectLister();
             } else {
                 return new S3BucketLister();
             }
-        } else if ( reqMethod.equalsIgnoreCase("head") ) {
-            if ( info.getKey().length() > 0 ) {
+        } else if (reqMethod.equalsIgnoreCase("head")) {
+            if (info.getKey().length() > 0) {
                 return new S3ObjectGetter(false);
-            } else if ( info.getBucket().length() > 0 ) {
+            } else if (info.getBucket().length() > 0) {
                 return new S3BucketChecker();
             }
-        } else if ( reqMethod.equalsIgnoreCase("post") ) {
-        } else if ( reqMethod.equalsIgnoreCase("put") ) {
-        } else if ( reqMethod.equalsIgnoreCase("delete") ) {
-            if ( info.getKey().length() > 0 ) {
+        } else if (reqMethod.equalsIgnoreCase("post")) {
+        } else if (reqMethod.equalsIgnoreCase("put")) {
+        } else if (reqMethod.equalsIgnoreCase("delete")) {
+            if (info.getKey().length() > 0) {
                 return new S3ObjectDeleter();
-            } else if ( info.getBucket().length() > 0 ) {
+            } else if (info.getBucket().length() > 0) {
                 return new S3BucketDeleter();
             }
         }
@@ -71,8 +71,11 @@ final class S3RequestFactory {
         protected HttpServletResponse response;
         protected S3BucketSource bucketSource;
 
-        public S3Info getRequest () { return requestInfo; }
-        protected S3ObjectSource getStore (String bucket) {
+        public S3Info getRequest() {
+            return requestInfo;
+        }
+
+        protected S3ObjectSource getStore(String bucket) {
             return bucketSource.getBucket(bucket);
         }
     }
@@ -84,15 +87,15 @@ final class S3RequestFactory {
             this.includeObjectBody = includeBody;
         }
 
-        public void doit () {
+        public void doit() {
             S3ObjectSource store = getStore(requestInfo.getBucket());
-            if ( store == null ) {
+            if (store == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             } else {
                 byte[] data = store.getObject(requestInfo.getKey());
-                if ( data != null ) {
+                if (data != null) {
                     response.setStatus(HttpServletResponse.SC_OK);
-                    if ( includeObjectBody ) writeResponse(response, data);
+                    if (includeObjectBody) writeResponse(response, data);
                 } else {
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 }
@@ -101,13 +104,13 @@ final class S3RequestFactory {
     }
 
     private static class S3ObjectLister extends BaseHandler {
-        public void doit () {
+        public void doit() {
             S3ObjectSource store = getStore(requestInfo.getBucket());
-            if ( store == null ) {
+            if (store == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             } else {
                 response.setStatus(HttpServletResponse.SC_OK);
-                for (String key : store.getKeys() ) {
+                for (String key : store.getKeys()) {
 
                 }
             }
@@ -115,22 +118,22 @@ final class S3RequestFactory {
     }
 
     private static class S3BucketLister extends BaseHandler {
-        public void doit () {
+        public void doit() {
             response.setStatus(HttpServletResponse.SC_OK);
-            for (String key : bucketSource.getBucketNames() ) {
+            for (String key : bucketSource.getBucketNames()) {
 
             }
         }
     }
 
     private static class S3BucketChecker extends BaseHandler {
-        public void doit () {
+        public void doit() {
         }
     }
 
     private static class S3BucketDeleter extends BaseHandler {
-        public void doit () {
-            if ( bucketSource.deleteBucket(requestInfo.getBucket()) ) {
+        public void doit() {
+            if (bucketSource.deleteBucket(requestInfo.getBucket())) {
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -139,11 +142,11 @@ final class S3RequestFactory {
     }
 
     private static class S3ObjectDeleter extends BaseHandler {
-        public void doit () {
+        public void doit() {
             S3ObjectSource store = getStore(requestInfo.getBucket());
-            if ( store == null ) {
+            if (store == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            } else if ( store.removeObject(requestInfo.getKey()) ) {
+            } else if (store.removeObject(requestInfo.getKey())) {
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);

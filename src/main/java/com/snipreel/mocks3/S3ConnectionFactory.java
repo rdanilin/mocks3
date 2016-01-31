@@ -9,38 +9,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class S3ConnectionFactory
-{
-    public final  String domain;
-    
-    public S3ConnectionFactory(String domain)
-    {
+@Deprecated
+public class S3ConnectionFactory {
+    public final String domain;
+
+    public S3ConnectionFactory(String domain) {
         this.domain = domain;
     }
-    
-    public S3Connection newConnection(String method, String host, String request)
-    {
+
+    public S3Connection newConnection(String method, String host, String request) {
         return new S3Connection(method, host, null, request, new HashMap<String, List<String>>());
     }
-    
-    public S3Connection newConnection(String method, String host, String bucket, String request)
-    {
+
+    public S3Connection newConnection(String method, String host, String bucket, String request) {
         return new S3Connection(method, host, bucket, request, new HashMap<String, List<String>>());
     }
-    
-    public S3Connection newConnection(HttpURLConnection connection)
-    {
+
+    public S3Connection newConnection(HttpURLConnection connection) {
         Map<String, List<String>> mapOfHeaders = new HashMap<String, List<String>>();
-        for (int i = 0; connection.getHeaderField(i) != null; i++)
-        {
+        for (int i = 0; connection.getHeaderField(i) != null; i++) {
             String key = connection.getHeaderField(i).toLowerCase();
-            if (key == null)
-            {
+            if (key == null) {
                 continue;
             }
             List<String> listOfValues = mapOfHeaders.get(key);
-            if (listOfValues == null)
-            {
+            if (listOfValues == null) {
                 listOfValues = new ArrayList<String>();
                 mapOfHeaders.put(key, listOfValues);
             }
@@ -48,41 +41,34 @@ public class S3ConnectionFactory
         }
         String method = connection.getRequestMethod();
         String host = connection.getHeaderField("Host");
-        if (host == null)
-        {
+        if (host == null) {
             host = connection.getURL().getHost();
         }
         String request = getRequest(connection.getURL());
         String bucket = getBucket(host, request);
         return new S3Connection(method, host, bucket, request, Collections.unmodifiableMap(mapOfHeaders));
     }
-    
-    private String getRequest(URL url)
-    {
+
+    private String getRequest(URL url) {
         StringBuilder builder = new StringBuilder();
-        if (url.getPath() == null){
+        if (url.getPath() == null) {
             builder.append('/');
-        }else {
-        builder.append(url.getPath());}
-        if (url.getQuery() != null)
-        {
+        } else {
+            builder.append(url.getPath());
+        }
+        if (url.getQuery() != null) {
             builder.append('?').append(url.getQuery());
         }
         return builder.toString();
     }
-    
-    private String getBucket(String host, String request)
-    {
-        if (host.equals(domain))
-        {
-            if (request.equals("/") || request.startsWith("/?"))
-            {
+
+    private String getBucket(String host, String request) {
+        if (host.equals(domain)) {
+            if (request.equals("/") || request.startsWith("/?")) {
                 return null;
             }
             return host.substring(1, host.indexOf('/', 1));
-        }
-        else if (host.endsWith('.' + domain))
-        {
+        } else if (host.endsWith('.' + domain)) {
             return host.substring(0, host.lastIndexOf('.' + domain));
         }
         return host;
