@@ -25,7 +25,10 @@ public class AmazonS3ClientMock extends AmazonS3Client {
         if (request == null) {
             throw new IllegalArgumentException();
         }
-        return new Bucket(request.getBucketName());
+
+        final Bucket bucket = new Bucket(request.getBucketName());
+        buckets.add(bucket);
+        return bucket;
     }
 
     @Override

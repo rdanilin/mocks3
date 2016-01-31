@@ -2,9 +2,12 @@ package com.github.mocks3;
 
 import com.amazonaws.services.s3.model.Bucket;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class AmazonS3ClientMockTest {
     private AmazonS3ClientMock amazonS3Client;
@@ -17,15 +20,17 @@ public class AmazonS3ClientMockTest {
 
     @Test
     public void testBucketExists() {
-        boolean bucketExist = amazonS3Client.doesBucketExist("my_bucket");
-        Assert.assertFalse(bucketExist);
+        final boolean bucketExist = amazonS3Client.doesBucketExist("mybucket");
+        assertFalse(bucketExist);
     }
 
     @Test
     public void testCreateBucket() {
-        final Bucket bucket = amazonS3Client.createBucket("my-bucket");
-        Assert.assertNotNull(bucket);
+        final Bucket bucket = amazonS3Client.createBucket("mybucket");
+        assertNotNull(bucket);
+        assertTrue(amazonS3Client.doesBucketExist("mybucket"));
     }
+
 
 //    @Test
 //    public void testHeadBucket() {
