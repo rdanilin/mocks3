@@ -1,8 +1,10 @@
 package com.github.mocks3;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,9 +16,14 @@ import com.amazonaws.services.s3.model.DeleteBucketRequest;
 import com.amazonaws.services.s3.model.HeadBucketRequest;
 import com.amazonaws.services.s3.model.HeadBucketResult;
 import com.amazonaws.services.s3.model.ListBucketsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
 
 public class AmazonS3ClientMock extends AmazonS3Client {
     private final Set<Bucket> buckets = Collections.synchronizedSet(new HashSet<>());
+    private final Map<String, ObjectListing> objects = Collections.synchronizedMap(new HashMap<>());
+
     private String endpoint;
 
     @Override
@@ -58,6 +65,17 @@ public class AmazonS3ClientMock extends AmazonS3Client {
         return super.headBucket(headBucketRequest);
     }
 
+    @Override
+    public ObjectListing listObjects(String bucketName) throws AmazonClientException {
+        // FIXME: implement me
+        return null;
+    }
+
+    @Override
+    public PutObjectResult putObject(PutObjectRequest request) {
+        PutObjectResult result = new PutObjectResult();
+        return result;
+    }
 
     @Override
     public String getBucketLocation(String bucketName) throws AmazonClientException {

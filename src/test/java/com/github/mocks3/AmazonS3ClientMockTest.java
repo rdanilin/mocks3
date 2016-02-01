@@ -1,5 +1,6 @@
 package com.github.mocks3;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,15 @@ public class AmazonS3ClientMockTest {
             allOf(hasItem("mybucket1"), hasItem("mybucket2")));
     }
 
-//    @Test
+    @Test
+    public void testPutObject() throws Exception {
+        amazonS3Client.createBucket("mybucket");
+
+        amazonS3Client.putObject("mybucket", "testfile", new File("null"));
+
+    }
+
+    //    @Test
 //    public void testHeadBucket() {
 //        final HeadBucketRequest headBucketRequest = new HeadBucketRequest("my_bucket");
 //        final HeadBucketResult headBucketResult = amazonS3Client.headBucket(headBucketRequest);
