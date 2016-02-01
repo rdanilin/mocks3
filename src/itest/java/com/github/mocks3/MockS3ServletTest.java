@@ -5,8 +5,10 @@ import java.io.IOException;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class MockS3ServletTest {
     private String serverUrl = "http://localhost:9000";
 
