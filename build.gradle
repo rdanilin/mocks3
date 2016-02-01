@@ -59,6 +59,6 @@ jettyStop {
     stopKey = 'stop'
 }
 
-check.dependsOn itest
+//check.dependsOn itest
 itest.dependsOn jettyRun
 jettyStop.mustRunAfter itest
