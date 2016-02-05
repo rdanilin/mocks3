@@ -28,7 +28,6 @@
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
             <version>1.10.49</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
